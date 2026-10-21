@@ -62,10 +62,10 @@
     "check:security-check": "node scripts/require-security-check.mjs --check"
   },
   "dependencies": {
-    "@capacitor/android": "^8.4.2",
+    "@capacitor/android": "^8.5.1",
     "@capacitor/core": "^8.4.2",
     "@capacitor/haptics": "^8.0.2",
-    "@capacitor/ios": "^8.4.2",
+    "@capacitor/ios": "^8.5.3",
     "@capacitor/local-notifications": "^8.2.1",
     "@capacitor/preferences": "^8.0.1",
     "@capacitor/push-notifications": "^8.1.2",
@@ -107,7 +107,7 @@
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-query": "^5.101.1",
     "@tanstack/react-router": "^1.170.16",
-    "@tanstack/react-start": "^1.168.26",
+    "@tanstack/react-start": "^1.169.3",
     "@tanstack/router-plugin": "^1.168.18",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -155,7 +155,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^8.0.16",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.5"
   },
   "resolutions": {
     "tar": "^7.5.1",
