@@ -1,26 +1,105 @@
-# PumpPilot AI (14)
+set -e
 
-Create a full-stack TypeScript web app named PumpPilot AI with React, Tailwind and shadcn/ui. Build a premium dark crypto dashboard with wallet connection UI, portfolio overview, explainable momentum scores, market scanner, asset detail pages, alerts, paper trading, strategy builder, backtesting and risk controls. Paper trading must be default. Live execution must remain a disabled adapter with the master switch off and locked. Never request or store seed phrases or private keys. Use mock data for BTC, ETH, SOL, BNB and fictional DEMO small-cap tokens, clearly label all mock/demo data, and include strong disclaimers that predictions are probabilistic, returns are not guaranteed, and users can lose all capital. Add responsive mobile navigation and desktop sidebar. Tagline: Spot momentum. Control risk. Trade smarter.
+git clone https://github.com/Juonamuoi9/getpumppilot.git
+cd getpumppilot
+git switch -c perf/quick-wins
 
-This project was built with [Lovable](https://lovable.dev).
+cat > perf.patch <<'PATCH'
+diff --git a/package.json b/package.json
+index 0000000..0000000 100644
+--- a/package.json
++++ b/package.json
+@@ -1,12 +1,14 @@
+ {
+   "name": "tanstack_start_ts",
+   "private": true,
+   "sideEffects": false,
+   "type": "module",
+   "scripts": {
++    "build:core": "vite build",
++    "ci:full": "bun run sync:route-seo && bun run gen:asset-og && bun run gen:social-hashes && bun run gen:sitemap && bun run test:security && bun run test:seo:social && vite build && bun run ping:indexing",
+     "dev": "vite dev",
+     "build": "bun run sync:route-seo && bun run gen:asset-og && bun run gen:social-hashes && bun run gen:sitemap && bun run test:security && bun run test:seo:social && vite build && bun run ping:indexing",
+     "preview": "vite preview",
+     "lint": "eslint .",
+     "format": "prettier --write .",
+     "cap:sync": "cap sync",
+diff --git a/tsconfig.json b/tsconfig.json
+index 0000000..0000000 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -1,15 +1,17 @@
+ {
+   "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "eslint.config.js"],
+   "compilerOptions": {
+     "target": "ES2022",
+     "jsx": "react-jsx",
+     "module": "ESNext",
+     "lib": ["ES2022", "DOM", "DOM.Iterable"],
+     "types": ["vite/client"],
+ 
+     /* Bundler mode */
+     "moduleResolution": "Bundler",
+     "allowImportingTsExtensions": true,
+     "verbatimModuleSyntax": false,
+     "noEmit": true,
++    "incremental": true,
++    "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo",
+ 
+     /* Linting */
+     "skipLibCheck": true,
+     "strict": true,
+     "noUnusedLocals": false,
+PATCH
 
-**Live app**: https://getpumppilot.lovable.app
+git apply perf.patch
 
-## Build with Lovable
+mkdir -p .github/workflows
+cat > .github/workflows/perf-ci.yml <<'YAML'
+name: perf-ci
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/b53dd35d-6730-4ffe-8f53-b18191f46610).
+on:
+  push:
+    branches: [main]
+  pull_request:
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-## Development
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+      - name: Cache bun + node deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun
+            ~/.cache/bun
+            node_modules
+          key: ${{ runner.os }}-deps-${{ hashFiles('**/package-lock.json','**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build core
+        run: npm run build:core
+YAML
+
+npm install
+npm run build:core
+
+git add package.json tsconfig.json .github/workflows/perf-ci.yml
+git commit -m "perf: add fast build, TS incremental cache, and CI cache"
+
+echo "Local changes committed successfully."
+echo "Next:"
+echo "git push --set-upstream origin perf/quick-wins"
+echo "gh pr create --title \"perf: quick wins\" --body \"Add a fast local build path, incremental TypeScript caching, and CI cache.\" --base main"
