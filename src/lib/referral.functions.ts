@@ -12,7 +12,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  */
 export const recordReferral = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) =>
+  .validator((data) =>
     z.object({ code: z.string().regex(/^[a-f0-9]{4,16}$/i) }).parse(data),
   )
   .handler(async ({ data, context }) => {

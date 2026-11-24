@@ -14,7 +14,7 @@ const Input = z.object({
  */
 export const askCopilot = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => Input.parse(data))
+  .validator((data: unknown) => Input.parse(data))
   .handler(async ({ data, context }) => {
     const { data: charge, error: chargeError } = await context.supabase.rpc("consume_credits", {
       _amount: CREDIT_COSTS.copilot_message,

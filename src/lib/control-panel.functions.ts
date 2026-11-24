@@ -68,7 +68,7 @@ function validateValue(type: FeatureFlag["value_type"], value: string): string {
  */
 export const updateFeatureFlag = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => UpdateInput.parse(data))
+  .validator((data: unknown) => UpdateInput.parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase as never, context.userId);
 
@@ -122,7 +122,7 @@ export const updateFeatureFlag = createServerFn({ method: "POST" })
 /** Admin-only: append-only change history. */
 export const listConfigAudit = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => z.object({ limit: z.number().int().min(1).max(500).default(100) }).parse(data ?? {}))
+  .validator((data: unknown) => z.object({ limit: z.number().int().min(1).max(500).default(100) }).parse(data ?? {}))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase as never, context.userId);
     const { data: rows, error } = await context.supabase
@@ -142,7 +142,7 @@ const AdviceInput = z.object({ request: z.string().min(4).max(2000) });
  */
 export const askControlPanelAdvisor = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => AdviceInput.parse(data))
+  .validator((data: unknown) => AdviceInput.parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.supabase as never, context.userId);
 

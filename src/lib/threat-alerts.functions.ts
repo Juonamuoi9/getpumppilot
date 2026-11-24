@@ -31,7 +31,7 @@ export type ThreatEmailInput = {
  */
 export const sendThreatEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: ThreatEmailInput): ThreatEmailInput => {
+  .validator((data: ThreatEmailInput): ThreatEmailInput => {
     const findings = Array.isArray(data.findings) ? data.findings.slice(0, 10) : [];
     const pdf =
       typeof data.pdfBase64 === "string" && data.pdfBase64.length <= MAX_PDF_BASE64_CHARS
