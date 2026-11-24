@@ -23,6 +23,7 @@ import path from "node:path";
 
 import { checkSchemaOrg, SCHEMA_ORG_VERSION } from "../src/lib/schema-org-validate.ts";
 import { extractJsonLdBlocks, parseJsonLdBlocks } from "../src/lib/jsonld-rich-results.ts";
+import { readSitemapUrlsXml } from "./sitemap-parts.mjs";
 
 const args = process.argv.slice(2);
 const flagValue = (name) => {
@@ -58,7 +59,7 @@ async function walkHtml(dir, out = []) {
 
 async function sitemapPaths() {
   try {
-    const xml = await readFile("public/sitemap.xml", "utf8");
+    const xml = await readSitemapUrlsXml();
     const urls = [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map((m) => m[1]);
     const paths = urls.map((u) => {
       try {

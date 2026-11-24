@@ -18,6 +18,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 import { validateJsonLdSource } from "../src/lib/jsonld-validate.ts";
+import { readSitemapUrlsXml } from "./sitemap-parts.mjs";
 
 const args = process.argv.slice(2);
 const dirArg = args.indexOf("--dir");
@@ -65,7 +66,7 @@ const SERVER = serverArg !== -1 ? args[serverArg + 1] : null;
 /** Routes to render when checking a live SSR server (from public/sitemap.xml). */
 async function sitemapPaths() {
   try {
-    const xml = await readFile("public/sitemap.xml", "utf8");
+    const xml = await readSitemapUrlsXml();
     const urls = [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map((m) => m[1]);
     const paths = urls.map((u) => {
       try {
