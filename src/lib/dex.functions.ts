@@ -37,7 +37,7 @@ export type SwapQuote = {
  */
 export const getSwapQuote = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => QuoteInput.parse(input))
+  .validator((input: unknown) => QuoteInput.parse(input))
   .handler(async ({ data, context }): Promise<SwapQuote> => {
     const { checkQuoteRateLimit } = await import("@/lib/quote-rate-limit.server");
     const verdict = checkQuoteRateLimit(context.userId);

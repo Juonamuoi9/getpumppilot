@@ -16,7 +16,7 @@ export type PriceAlertEmailInput = {
  */
 export const sendPriceAlertEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: PriceAlertEmailInput): PriceAlertEmailInput => {
+  .validator((data: PriceAlertEmailInput): PriceAlertEmailInput => {
     const alerts = Array.isArray(data.alerts) ? data.alerts.slice(0, 10) : [];
     return {
       test: !!data.test,
