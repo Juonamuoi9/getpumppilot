@@ -64,9 +64,22 @@ const SERVER = serverArg !== -1 ? args[serverArg + 1] : null;
 
 /** Routes to render when checking a live SSR server (from public/sitemap.xml). */
 async function sitemapPaths() {
+  const locs = (xml) => [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map((m) => m[1]);
   try {
-    const xml = await readFile("public/sitemap.xml", "utf8");
-    const urls = [...xml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map((m) => m[1]);
+    let xml = await readFile("public/sitemap.xml", "utf8");
+    let urls = locs(xml);
+    // sitemap.xml is an index: expand child sitemaps into page URLs.
+    if (/<sitemapindex/i.test(xml)) {
+      urls = [];
+      for (const child of locs(xml)) {
+        try {
+          const file = path.join("public", new URL(child).pathname);
+          urls.push(...locs(await readFile(file, "utf8")));
+        } catch {
+          /* missing child sitemap — skipped */
+        }
+      }
+    }
     const paths = urls.map((u) => {
       try {
         return new URL(u).pathname;
