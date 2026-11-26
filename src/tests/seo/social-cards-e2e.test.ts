@@ -145,8 +145,8 @@ beforeAll(async () => {
     // No SSR server running (fresh CI checkout) — boot one for the suite.
     const port = 43117;
     base = `http://localhost:${port}`;
-    server = spawn("npx", ["vite", "dev", "--port", String(port), "--host", "127.0.0.1"], {
-      stdio: "ignore",
+    server = spawn("bun", ["x", "vite", "dev", "--port", String(port), "--host", "127.0.0.1"], {
+      stdio: ["ignore", "ignore", "pipe"],
       env: process.env,
     });
     const deadline = Date.now() + 90_000;
