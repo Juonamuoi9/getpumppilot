@@ -14,7 +14,7 @@ export type {
 /** Live sitemap + robots.txt + last-indexed status. Admin-only. */
 export const getSeoHealth = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { maxInspections?: number }) => ({
+  .validator((input: { maxInspections?: number }) => ({
     maxInspections: Math.min(Math.max(Number(input?.maxInspections ?? 10), 0), 25),
   }))
   .handler(async ({ data, context }): Promise<SeoHealthReport> => {

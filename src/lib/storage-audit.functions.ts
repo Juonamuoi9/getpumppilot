@@ -32,7 +32,7 @@ export type StorageAuditFilter = {
  */
 export const getStorageAccessAudit = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: StorageAuditFilter): Required<StorageAuditFilter> => ({
+  .validator((input: StorageAuditFilter): Required<StorageAuditFilter> => ({
     hours: Math.min(Math.max(Number(input?.hours ?? 24), 1), 720),
     bucket: String(input?.bucket ?? "all").slice(0, 64),
     decision:
@@ -94,7 +94,7 @@ type AlertQuery = { hours?: number; includeAcknowledged?: boolean; evaluate?: bo
  */
 export const getStorageAlerts = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: AlertQuery) => ({
+  .validator((input: AlertQuery) => ({
     hours: Math.min(Math.max(Number(input?.hours ?? 168), 1), 720),
     includeAcknowledged: input?.includeAcknowledged === true,
     evaluate: input?.evaluate !== false,
@@ -128,7 +128,7 @@ export const getStorageAlerts = createServerFn({ method: "POST" })
 /** Admin acknowledges an alert; the audit rows themselves stay untouched. */
 export const acknowledgeStorageAlert = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { id: string }) => ({ id: String(input?.id ?? "").slice(0, 64) }))
+  .validator((input: { id: string }) => ({ id: String(input?.id ?? "").slice(0, 64) }))
   .handler(async ({ data, context }): Promise<{ ok: true }> => {
     await assertAdmin(context.supabase, context.userId);
     const { error } = await (context.supabase as unknown as {

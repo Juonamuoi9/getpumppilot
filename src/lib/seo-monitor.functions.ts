@@ -56,7 +56,7 @@ export type SeoAlertRow = {
 /** Snapshot history for the trend charts. Admin-only. */
 export const getSeoCrawlHistory = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { days?: number }) => ({
+  .validator((input: { days?: number }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 30), 1), 365),
   }))
   .handler(async ({ data, context }): Promise<SeoSnapshotRow[]> => {
@@ -76,7 +76,7 @@ export const getSeoCrawlHistory = createServerFn({ method: "POST" })
 /** Change feed. Admin-only. */
 export const getSeoCrawlAlerts = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { days?: number; onlyOpen?: boolean; severity?: string }) => ({
+  .validator((input: { days?: number; onlyOpen?: boolean; severity?: string }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 30), 1), 365),
     onlyOpen: !!input?.onlyOpen,
     severity: ["info", "warning", "critical"].includes(String(input?.severity))
@@ -103,7 +103,7 @@ export const getSeoCrawlAlerts = createServerFn({ method: "POST" })
 /** Mark alerts as reviewed so the feed only shows new changes. */
 export const acknowledgeSeoAlerts = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { ids: string[] }) => ({
+  .validator((input: { ids: string[] }) => ({
     ids: (Array.isArray(input?.ids) ? input.ids : []).slice(0, 200).map(String),
   }))
   .handler(async ({ data, context }): Promise<{ updated: number }> => {
@@ -121,7 +121,7 @@ export const acknowledgeSeoAlerts = createServerFn({ method: "POST" })
 /** Run a crawl-health check now. Admin-only; the cron route runs the same code. */
 export const runSeoCrawlCheck = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { sampleSize?: number }) => ({
+  .validator((input: { sampleSize?: number }) => ({
     sampleSize: Math.min(Math.max(Number(input?.sampleSize ?? 8), 1), 25),
   }))
   .handler(async ({ data, context }) => {
@@ -148,7 +148,7 @@ export const runSeoCrawlCheck = createServerFn({ method: "POST" })
  */
 export const runSeoSelfAudit = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { maxUrls?: number }) => ({
+  .validator((input: { maxUrls?: number }) => ({
     maxUrls: Math.min(Math.max(Number(input?.maxUrls ?? 40), 1), 80),
   }))
   .handler(async ({ data, context }) => {

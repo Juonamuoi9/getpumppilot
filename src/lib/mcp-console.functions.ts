@@ -15,7 +15,7 @@ export const listConsoleTools = createServerFn({ method: "GET" }).handler(async 
 
 export const runConsoleToolCall = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => RunInput.parse(data))
+  .validator((data: unknown) => RunInput.parse(data))
   .handler(async ({ data, context }) => {
     const { runConsoleTool } = await import("./mcp-console.server");
 

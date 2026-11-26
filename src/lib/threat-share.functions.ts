@@ -34,7 +34,7 @@ export type ShareLinkResult = {
  */
 export const createThreatReportShareLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: ShareLinkInput): ShareLinkInput => {
+  .validator((data: ShareLinkInput): ShareLinkInput => {
     const pdf = typeof data.pdfBase64 === "string" ? data.pdfBase64 : "";
     if (!pdf || pdf.length > MAX_PDF_BASE64_CHARS) {
       throw new Error("invalid_pdf");
