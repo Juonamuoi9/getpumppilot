@@ -79,7 +79,7 @@ function fallback(input: DoctorInput): DoctorReport {
 /** Signed-in users only, and charged server-side so the AI gateway can't be used for free. */
 export const analyzePortfolio = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => Input.parse(data))
+  .validator((data: unknown) => Input.parse(data))
   .handler(async ({ data, context }): Promise<{ ok: true; report: DoctorReport } | { ok: false; error: string; report: DoctorReport }> => {
     const { data: charge, error: chargeError } = await context.supabase.rpc("consume_credits", {
       _amount: CREDIT_COSTS.doctor_audit,

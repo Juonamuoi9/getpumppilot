@@ -37,7 +37,7 @@ export type WalletFunnelReport = {
  */
 export const getWalletFunnelReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { days?: number }) => ({
+  .validator((input: { days?: number }) => ({
     days: Math.min(Math.max(Number(input?.days ?? 30), 1), 365),
   }))
   .handler(async ({ data, context }): Promise<WalletFunnelReport> => {

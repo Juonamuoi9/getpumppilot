@@ -14,7 +14,7 @@ type PortalSessionResult = { url: string } | { error: string };
 
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: {
+  .validator((data: {
     priceId: string;
     returnUrl: string;
     environment: StripeEnv;
@@ -68,7 +68,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
 
 export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { returnUrl?: string; environment: StripeEnv }) => data)
+  .validator((data: { returnUrl?: string; environment: StripeEnv }) => data)
   .handler(async ({ data, context }): Promise<PortalSessionResult> => {
     const { supabase, userId } = context;
     const { data: sub, error: subError } = await supabase
@@ -95,7 +95,7 @@ export const createPortalSession = createServerFn({ method: "POST" })
 
 export const createGoLiveTestCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: {
+  .validator((data: {
     amountInCents: number;
     returnUrl: string;
     environment: StripeEnv;
@@ -137,7 +137,7 @@ export const createGoLiveTestCheckout = createServerFn({ method: "POST" })
 
 export const getGoLiveTestSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { sessionId: string; environment: StripeEnv }) => {
+  .validator((data: { sessionId: string; environment: StripeEnv }) => {
     assertValidCheckoutSessionId(data.sessionId);
     return data;
   })

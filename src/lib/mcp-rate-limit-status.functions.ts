@@ -68,7 +68,7 @@ export function normalizeRateLimitStatus(raw: unknown): RateLimitStatus {
  */
 export const getMcpRateLimitStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: unknown) => StatusInput.parse(data ?? {}))
+  .validator((data: unknown) => StatusInput.parse(data ?? {}))
   .handler(async ({ data, context }): Promise<RateLimitStatus> => {
     const { data: raw, error } = await context.supabase.rpc("mcp_rate_limit_status", {
       _user_id: context.userId,
