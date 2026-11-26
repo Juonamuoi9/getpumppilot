@@ -121,8 +121,8 @@ beforeAll(async () => {
   if (!(await ping(base))) {
     const port = 43121;
     base = `http://localhost:${port}`;
-    server = spawn("npx", ["vite", "dev", "--port", String(port), "--host", "127.0.0.1"], {
-      stdio: "ignore",
+    server = spawn("bun", ["x", "vite", "dev", "--port", String(port), "--host", "127.0.0.1"], {
+      stdio: ["ignore", "ignore", "pipe"],
       env: process.env,
     });
     const deadline = Date.now() + 90_000;
